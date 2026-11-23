@@ -1,0 +1,8 @@
+services:
+  xerc:
+    build: .
+    container_name: xerc
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "7319:7319"

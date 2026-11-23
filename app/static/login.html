@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Xərc</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230F3B45'/><text x='50' y='70' font-size='62' text-anchor='middle' fill='%23E8A317' font-family='Arial'>₼</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="login-body">
+  <main class="login">
+    <div class="login-brand">
+      <span class="brand-mark">₼</span>
+      <div>
+        <div class="brand-name">Xərc</div>
+        <div class="brand-sub">Cost monitor</div>
+      </div>
+    </div>
+    <form id="login-form" class="login-form" autocomplete="on">
+      <label class="field">
+        <span>Username</span>
+        <input name="username" autocomplete="username" required value="admin">
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <input name="password" type="password" autocomplete="current-password" required autofocus>
+      </label>
+      <p class="form-error" id="login-error" role="alert" hidden></p>
+      <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+  </main>
+<script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const f = e.target, err = document.getElementById('login-error'), btn = f.querySelector('button');
+  btn.disabled = true; btn.textContent = 'Signing in…'; err.hidden = true;
+  try {
+    const res = await fetch('/api/login', {method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username: f.username.value.trim(), password: f.password.value})});
+    if (res.ok) { location.href = '/'; return; }
+    const d = await res.json().catch(() => ({}));
+    err.textContent = d.detail || 'Sign-in failed'; err.hidden = false;
+  } catch { err.textContent = 'Server is not reachable'; err.hidden = false; }
+  btn.disabled = false; btn.textContent = 'Sign in';
+});
+</script>
+</body>
+</html>
